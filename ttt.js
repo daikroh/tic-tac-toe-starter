@@ -57,4 +57,17 @@ function board_error(x, y, board) {
         return false;
     } return true;
 }
+
+/**
+ * 
+ * @param {number[][]} board - 2D array state of game
+ * @returns true unless someone won
+ */
+function game_state(board) {
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (board[i][j])
+        }
+    }
+}
 main()
