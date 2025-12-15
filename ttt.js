@@ -2,8 +2,8 @@ function main() {
     console.log(`Lets play tic tac toe!`);
     // let board = init_board();
     let board  = [
-        ['X', 'X', 'X'],
-        ['X', 'X', 'X'],
+        ['O', 'X', 'X'],
+        ['O', 'X', 'X'],
         ['X', 'X', 'X']
     ];
     let state = 0;
@@ -78,8 +78,7 @@ function game_state(board) {
             if (board[i][j] === '_') {
                 return true;
             } else {
-                state += check_win(board[i][j]);
-                if (state === 3 || state === -3) {
+                if (check_win(board[i][j], state)) {
                     return false;
                 }
             }
@@ -90,16 +89,23 @@ function game_state(board) {
 /**
  * 
  * @param {string} point - X and O for points
- * @returns 1 for X and -1 for O
+ * @param {number} state - 3 or -3 means a player has won
+ * @returns true if someone wins, false if not
  */
-function check_win(point) {
+function check_win(point, state) {
     switch(point) {
         case 'X':
-            return 1;
-        case '_':
-            return -1;
-        default:
-            return 0;
+            state++;
+            break;
+        case 'O':
+            state--;
+            break;
+    }
+    if (state === 3 || state === -3) {
+        return true;
+    } else {
+        state = 0;
+        return false;
     }
 }
 
