@@ -71,41 +71,15 @@ function board_error(x, y, board) {
  * @returns true, false if someone won
  */
 function game_state(board) {
-    let state = 0;
-    // horizontal
     for (let i = 0; i < 3; i++) {
+        let state = 0;
         for (let j = 0; j < 3; j++) {
-            if (board[i][j] === '_') {
-                return true;
-            } else {
-                if (check_win(board[i][j], state)) {
-                    return false;
-                }
-            }
+            if (board[i][j] === 'X') state++;
+            else if (board[i][j] === 'O') state--;
         }
-    }
-}
-
-/**
- * 
- * @param {string} point - X and O for points
- * @param {number} state - 3 or -3 means a player has won
- * @returns true if someone wins, false if not
- */
-function check_win(point, state) {
-    switch(point) {
-        case 'X':
-            state++;
-            break;
-        case 'O':
-            state--;
-            break;
-    }
-    if (state === 3 || state === -3) {
-        return true;
-    } else {
-        state = 0;
-        return false;
+        if (state === 3 || state === -3) {
+            return "Someone won!";
+        }
     }
 }
 
