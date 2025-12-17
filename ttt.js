@@ -4,7 +4,7 @@ function main() {
     let board  = [
         ['O', 'X', 'X'],
         ['O', 'X', 'X'],
-        ['X', 'X', 'X']
+        ['O', 'X', 'X']
     ];
     let state = 0;
     print_board(board);
@@ -76,11 +76,28 @@ function game_state(board) {
         for (let j = 0; j < 3; j++) {
             if (board[i][j] === 'X') state++;
             else if (board[i][j] === 'O') state--;
+            else break;
         }
-        if (state === 3 || state === -3) {
-            return "Someone won!";
+        if (check_win(state)) {
+            return true;
+        } state = 0;
+
+        for (j = 0; j < 3; j++) {
+            if (board[j][i] === 'X') state++;
+            else if (board[j][i] === 'O') state--;
+            else break;
         }
+        if (check_win(state)) {
+            return true;
+        } state = 0;
+        return false;
+
     }
 }
 
+function check_win(state) {
+    if (state === 3 || state === -3) {
+            return true;
+        } return false;
+}
 main()
