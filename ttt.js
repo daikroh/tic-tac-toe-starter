@@ -1,23 +1,25 @@
 function main() {
     console.log(`Lets play tic tac toe!`);
-    // let board = init_board();
-    let board  = [
-        ['X', 'O', 'O'],
-        ['O', 'X', 'X'],
-        ['X', 'X', 'O']
-    ];
+    let board = init_board();
+    // let board  = [
+    //     ['X', 'O', 'O'],
+    //     ['O', 'X', 'X'],
+    //     ['X', 'X', 'O']
+    // ];
     let state = 0;
     print_board(board);
     console.log(game_state(board));
+    while (!game_state(board)) {
+
+    }
 }
 
 function init_board() {
-    let board = [
+    return [
         ['_', '_', '_'],
         ['_', '_', '_'],
         ['_', '_', '_']
     ];
-    return board;
 }
 
 /**
@@ -68,7 +70,7 @@ function board_error(x, y, board) {
 /**
  * 
  * @param {number[][]} board - 2D array state of game
- * @returns true, false if someone won
+ * @returns false, true if someone won
  */
 function game_state(board) {
     let state = 0
@@ -79,7 +81,7 @@ function game_state(board) {
             else break;
         }
         if (check_win(state)) {
-            return true;
+            return false;
         } state = 0;
 
         for (j = 0; j < 3; j++) {
@@ -88,7 +90,7 @@ function game_state(board) {
             else break;
         }
         if (check_win(state)) {
-            return true;
+            return false;
         } state = 0;
     }
     for (j = 0; j < 3; j++) {
@@ -97,7 +99,7 @@ function game_state(board) {
         else break;
     }
     if (check_win(state)) {
-            return "front";
+            return false;
         } state = 0;
 
     for (j = 2; j > -1; j--) {
@@ -107,13 +109,24 @@ function game_state(board) {
     }
 
     if (check_win(state)) {
-            return true;
-        } return false;
+            return false;
+        } return true;
 }
 
 function check_win(state) {
     if (state === 3 || state === -3) {
             return true;
         } return false;
+}
+
+/**
+ * 
+ * @param {number} x - x coord 
+ * @param {number} y - y coord
+ */
+function input(x, y) {
+    if (board_error(x, y, board) && input_error(x) && input_error(y)) {
+        console.log("valid!");
+    }
 }
 main()
