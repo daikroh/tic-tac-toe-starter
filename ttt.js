@@ -2,9 +2,9 @@ function main() {
     console.log(`Lets play tic tac toe!`);
     // let board = init_board();
     let board  = [
+        ['X', 'O', 'O'],
         ['O', 'X', 'X'],
-        ['O', 'X', 'X'],
-        ['O', 'X', 'X']
+        ['X', 'X', 'O']
     ];
     let state = 0;
     print_board(board);
@@ -71,8 +71,8 @@ function board_error(x, y, board) {
  * @returns true, false if someone won
  */
 function game_state(board) {
+    let state = 0
     for (let i = 0; i < 3; i++) {
-        let state = 0;
         for (let j = 0; j < 3; j++) {
             if (board[i][j] === 'X') state++;
             else if (board[i][j] === 'O') state--;
@@ -90,9 +90,25 @@ function game_state(board) {
         if (check_win(state)) {
             return true;
         } state = 0;
-        return false;
-
     }
+    for (j = 0; j < 3; j++) {
+        if (board[j][j] === 'X') state++;
+        else if (board[j][j] === 'O') state--;
+        else break;
+    }
+    if (check_win(state)) {
+            return "front";
+        } state = 0;
+
+    for (j = 2; j > -1; j--) {
+        if (board[Math.abs(j - 2)][j] === 'X') state++;
+        else if (board[Math.abs(j - 2)][j] === 'O') state--;
+        else break;
+    }
+
+    if (check_win(state)) {
+            return true;
+        } return false;
 }
 
 function check_win(state) {
