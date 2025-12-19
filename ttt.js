@@ -11,9 +11,23 @@ function main() {
 
     let current = 'X'
     console.log('Game start!')
-    while (!game_state(board)) {
-        console.log('Enter ')
-    }
+    while (game_in_progress(board)) {
+        console.log('Enter your move player ' + current + '!');
+        const prompt = require('prompt-sync')();
+        let x = parseInt(prompt('Enter x coordinate (0-2): '));
+        if (input_error(x)) {
+            continue;
+        }
+        let y = parseInt(prompt('Enter y coordinate (0-2): '));
+        if (input_error(y)) {
+            continue;
+        }
+        if (board_error(x, y, board)) {
+            continue;
+        }
+        board = input(x, y, board, current);
+        print_board(board);
+    } console.log('CONGRATS PLAYER ' + current + '!!!')
 }
 
 function init_board() {
@@ -49,10 +63,10 @@ function print_board(board) {
  * @returns true if input is valid, else false
  */
 function input_error(input) {
-    if (input < 0 || input > 2) {
+    if (input < 0 || input > 2 || isNaN(input)) {
         console.log("Please put a proper value!");
-        return false;
-    } return true;
+        return true;
+    } return false;
 }
 
 /**
@@ -65,8 +79,8 @@ function input_error(input) {
 function board_error(x, y, board) {
     if (board[x][y] !== '_') {
         console.log('Please select an empty space!');
-        return false;
-    } return true;
+        return true;
+    } return false;
 }
 
 /**
@@ -74,7 +88,7 @@ function board_error(x, y, board) {
  * @param {number[][]} board - 2D array state of game
  * @returns false, true if someone won
  */
-function game_state(board) {
+function game_in_progress(board) {
     let state = 0
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
@@ -127,10 +141,11 @@ function check_win(state) {
  * @param {number} y - y coord
  * @param {number[][]} board - current board
  * @param {string} user - which player is input
+ * 
+ * @returns {number[][]} updated board
  */
 function input(x, y, board, user) {
-    if (board_error(x, y, board) && input_error(x) && input_error(y)) {
-        board[x][y] = user;
-    }
+    board[x][y] = user;
+    return board;
 }
 main()
