@@ -1,4 +1,5 @@
 function main() {
+    const prompt = require('prompt-sync')();
     console.log(`Lets play tic tac toe!`);
     let board = init_board();
     // let board  = [
@@ -13,7 +14,6 @@ function main() {
     console.log('Game start!')
     while (game_in_progress(board)) {
         console.log('Enter your move player ' + current + '!');
-        const prompt = require('prompt-sync')();
         let x = parseInt(prompt('Enter x coordinate (0-2): '));
         if (input_error(x)) {
             continue;
@@ -27,6 +27,7 @@ function main() {
         }
         board = input(x, y, board, current);
         print_board(board);
+        current = player_swap(current);
     } console.log('CONGRATS PLAYER ' + current + '!!!')
 }
 
@@ -36,6 +37,20 @@ function init_board() {
         ['_', '_', '_'],
         ['_', '_', '_']
     ];
+}
+
+/**
+ * 
+ * @param {string} current - 'X' or 'O'
+ * 
+ * @returns opposite of current player
+ */
+function player_swap(current) {
+    if (current === 'X') {
+        current = 'O';
+    } else {
+        current = 'X';
+    } return current;
 }
 
 /**
