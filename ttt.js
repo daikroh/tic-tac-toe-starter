@@ -8,9 +8,11 @@ function main() {
     // ];
     let state = 0;
     print_board(board);
-    console.log(game_state(board));
-    while (!game_state(board)) {
 
+    let current = 'X'
+    console.log('Game start!')
+    while (!game_state(board)) {
+        console.log('Enter ')
     }
 }
 
@@ -121,12 +123,14 @@ function check_win(state) {
 
 /**
  * 
- * @param {number} x - x coord 
+ * @param {number} x - x coord
  * @param {number} y - y coord
+ * @param {number[][]} board - current board
+ * @param {string} user - which player is input
  */
-function input(x, y) {
+function input(x, y, board, user) {
     if (board_error(x, y, board) && input_error(x) && input_error(y)) {
-        console.log("valid!");
+        board[x][y] = user;
     }
 }
 main()
