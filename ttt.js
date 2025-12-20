@@ -166,9 +166,26 @@ function input(x, y, board, user) {
 
 function best_move(board, player) {
     let depth = 0;
+    let current_score;
     let best_score = (player === 'O') ? 10 : -10;
     const opp = (player === 'O') ? 'X': 'O';
+    let best_x = -1;
+    let best_y = -1;
     
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++);
+        if (board[i][j] = '_') {
+            board[i][j] = player;
+            current_score = minimax(board, opp, depth);
+        }
+    }
+}
 
+function minimax(board, opp, depth) {
+    let to_return;
+
+    if (game_in_progress(board)) {
+        
+    }
 }
 main()
