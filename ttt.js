@@ -163,4 +163,12 @@ function input(x, y, board, user) {
     board[x][y] = user;
     return board;
 }
+
+function best_move(board, player) {
+    let depth = 0;
+    let best_score = (player === 'O') ? 10 : -10;
+    const opp = (player === 'O') ? 'X': 'O';
+    
+
+}
 main()
