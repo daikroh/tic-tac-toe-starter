@@ -2,33 +2,45 @@ function main() {
     const prompt = require('prompt-sync')();
     console.log(`Lets play tic tac toe!`);
     let board = init_board();
-    // let board  = [
-    //     ['X', 'O', 'O'],
-    //     ['O', 'X', 'X'],
-    //     ['X', 'X', 'O']
-    // ];
     let state = 0;
     print_board(board);
 
     let current = 'X'
     console.log('Game start!')
     while (game_in_progress(board)) {
-        console.log('Enter your move player ' + current + '!');
-        let x = parseInt(prompt('Enter x coordinate (0-2): '));
-        if (input_error(x)) {
-            continue;
+        if (current === 'X') {
+            console.log('Enter your move player ' + current + '!');
+            let x = parseInt(prompt('Enter row (0-2): '));
+            if (input_error(x)) {
+                continue;
+            }
+            let y = parseInt(prompt('Enter column (0-2): '));
+            if (input_error(y)) {
+                continue;
+            }
+            if (board_error(x, y, board)) {
+                continue;
+            }
+            board = input(x, y, board, current);
+            print_board(board);
+            current = player_swap(current);
+        } else {
+            const move = best_move(board, 'O');
+            board[move.row][move.column] = 'O';
+            console.log(`O plays: ${move.row}, ${move.column}`);
+            print_board(board);
+            current = player_swap(current);
         }
-        let y = parseInt(prompt('Enter y coordinate (0-2): '));
-        if (input_error(y)) {
-            continue;
-        }
-        if (board_error(x, y, board)) {
-            continue;
-        }
-        board = input(x, y, board, current);
-        print_board(board);
-        current = player_swap(current);
-    } console.log('CONGRATS PLAYER ' + current + '!!!')
+    }
+    
+    const winner = check_winner(board);
+    if (winner === 1) {
+        console.log('CONGRATS PLAYER X!!!');
+    } else if (winner === -1) {
+        console.log('CONGRATS PLAYER O!!!');
+    } else {
+        console.log('Tied Game!');
+    }
 }
 
 function init_board() {
@@ -104,44 +116,13 @@ function board_error(x, y, board) {
  * @returns false, true if someone won
  */
 function game_in_progress(board) {
-    let state = 0
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            if (board[i][j] === 'X') state++;
-            else if (board[i][j] === 'O') state--;
-            else break;
-        }
-        if (check_win(state)) {
-            return false;
-        } state = 0;
-
-        for (j = 0; j < 3; j++) {
-            if (board[j][i] === 'X') state++;
-            else if (board[j][i] === 'O') state--;
-            else break;
-        }
-        if (check_win(state)) {
-            return false;
-        } state = 0;
+    if (check_winner(board) !== 0) {
+        return false;
     }
-    for (j = 0; j < 3; j++) {
-        if (board[j][j] === 'X') state++;
-        else if (board[j][j] === 'O') state--;
-        else break;
+    if (check_full(board)) {
+        return false;
     }
-    if (check_win(state)) {
-            return false;
-        } state = 0;
-
-    for (j = 2; j > -1; j--) {
-        if (board[Math.abs(j - 2)][j] === 'X') state++;
-        else if (board[Math.abs(j - 2)][j] === 'O') state--;
-        else break;
-    }
-
-    if (check_win(state)) {
-            return false;
-        } return true;
+    return true;
 }
 
 function check_win(state) {
@@ -164,28 +145,140 @@ function input(x, y, board, user) {
     return board;
 }
 
-function best_move(board, player) {
-    let depth = 0;
-    let current_score;
-    let best_score = (player === 'O') ? 10 : -10;
-    const opp = (player === 'O') ? 'X': 'O';
-    let best_x = -1;
-    let best_y = -1;
-    
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++);
-        if (board[i][j] = '_') {
-            board[i][j] = player;
-            current_score = minimax(board, opp, depth);
+/**
+ * checks for a winner
+ * @param {string[][]} board - current board state
+ * @returns 1 if X wins, -1 if O wins, 0 if no winner
+ */
+function check_winner(board) {
+    for (let row = 0; row < 3; row++) {
+        if (board[row][0] !== '_' && 
+            board[row][0] === board[row][1] && 
+            board[row][1] === board[row][2]) {
+            return board[row][0] === 'X' ? 1 : -1;
         }
     }
-}
-
-function minimax(board, opp, depth) {
-    let to_return;
-
-    if (game_in_progress(board)) {
-        
+    
+    for (let col = 0; col < 3; col++) {
+        if (board[0][col] !== '_' && 
+            board[0][col] === board[1][col] && 
+            board[1][col] === board[2][col]) {
+            return board[0][col] === 'X' ? 1 : -1;
+        }
     }
+    
+    if (board[0][0] !== '_' && 
+        board[0][0] === board[1][1] && 
+        board[1][1] === board[2][2]) {
+        return board[0][0] === 'X' ? 1 : -1;
+    }
+    
+    if (board[0][2] !== '_' && 
+        board[0][2] === board[1][1] && 
+        board[1][1] === board[2][0]) {
+        return board[0][2] === 'X' ? 1 : -1;
+    }
+    
+    return 0;
 }
+
+/**
+ * Checks if board is full
+ * 
+ * @param {string[][]} board
+ * @returns {boolean} true if full, false otherwise
+ */
+function check_full(board) {
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (board[i][j] === '_') {
+                return false;
+            }
+        }
+    } return true;
+}
+
+/**
+ * minimax algorithm
+ * 
+ * @param {string[][]} board - current board state
+ * @param {string} player - current player ('X' or 'O')
+ * @param {number} depth - recursion depth
+ * @returns {number} score
+ */
+function minimax(board, player, depth) {
+    // terminal state
+    const winner = check_winner(board);
+    if (winner === -1) {
+        return depth - 10;
+    } else if (winner === 1) {
+        return 10 - depth;
+    } else if (check_full(board)) {
+        return 0;
+    }
+    
+    let score;
+    
+    if (player === 'X') {  // max
+        score = -10;
+        for (let row = 0; row < 3; row++) {
+            for (let col = 0; col < 3; col++) {
+                if (board[row][col] === '_') {
+                    board[row][col] = player;  // Try move
+                    score = Math.max(score, minimax(board, 'O', depth + 1));  // Recurse
+                    board[row][col] = '_'; 
+                }
+            }
+        }
+    } else {  // min
+        score = 10;
+        for (let row = 0; row < 3; row++) {
+            for (let col = 0; col < 3; col++) {
+                if (board[row][col] === '_') {
+                    board[row][col] = player; 
+                    score = Math.min(score, minimax(board, 'X', depth + 1));
+                    board[row][col] = '_'; 
+                }
+            }
+        }
+    }
+    
+    return score;
+}
+
+/**
+ * find best move via minimax
+ * 
+ * @param {string[][]} board - current board state
+ * @param {string} player - player to find best move for ('X' or 'O')
+ * @returns {{row: number, column: number}} best move coordinates
+ */
+function best_move(board, player) {
+    let best = { row: -1, column: -1 };
+    let best_score = (player === 'O') ? 10 : -10;
+    const opponent = (player === 'O') ? 'X' : 'O';
+    
+    for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
+            if (board[row][col] === '_') {
+                board[row][col] = player;
+                const current_score = minimax(board, opponent, 0);
+                board[row][col] = '_'; 
+                
+                // O minimizes, X maximizes
+                if (player === 'O' && current_score < best_score) {
+                    best_score = current_score;
+                    best.row = row;
+                    best.column = col;
+                } else if (player === 'X' && current_score > best_score) {
+                    best_score = current_score;
+                    best.row = row;
+                    best.column = col;
+                }
+            }
+        }
+    }
+    return best;
+}
+
 main()
